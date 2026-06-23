@@ -56,12 +56,17 @@ Granular tasks per phase. `[x]` done, `[ ]` pending. Keep in sync with reality.
 > tooltips is deferred to a live `reflex run`, consistent with the Phase 1/2
 > manual tasks; the helpers are unit-tested at the generated-JS level.
 
-## Phase 4 — Release
+## Phase 4 — Release (uv-based)
 
+- [x] T4.0 Conform to the Reflex custom-component layout; generate the `.pyi`
+  stub via `uv run reflex component build`; `twine check dist/*` passes.
 - [ ] T4.1 Finalize version + changelog entry.
-- [ ] T4.2 `python -m build`; install the wheel in a clean venv and smoke-test.
-- [ ] T4.3 `twine upload`; create a GitHub release tag.
+- [ ] T4.2 `uv run reflex component build`; install the wheel in a clean venv
+  (`uv venv && uv pip install dist/*.whl`) and smoke-test.
+- [ ] T4.3 `uv publish --token <pypi-token>` (or `uv run twine upload dist/*`);
+  create a GitHub release tag.
 - [ ] T4.4 Update README install instructions to the published version.
+- [ ] T4.5 (optional) `uv run reflex component share` for gallery discovery.
 
 ## Backlog / ideas
 

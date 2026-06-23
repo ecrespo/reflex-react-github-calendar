@@ -6,6 +6,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added (Packaging — Reflex custom component, publish-ready)
+- Generated `github_calendar.pyi` type stub (via `reflex component build`) so
+  consumers get full IDE autocomplete and type checking; shipped in the wheel.
+- `uv`-based developer and publishing workflow documented in the README
+  (`uv run reflex component build` → `uv publish`); `twine check` passes on the
+  built wheel and sdist.
+- Demo `rxconfig.py` aligned with Reflex 0.9 (Sitemap + TailwindV4 plugins).
+
 ### Added (Phase 3 — Advanced props, via TDD/DDD)
 - `Theme` DDD value object (`domain.py`) validating custom color scales
   (`[zero, max]` pair or five explicit colors) and producing the `theme` prop.
