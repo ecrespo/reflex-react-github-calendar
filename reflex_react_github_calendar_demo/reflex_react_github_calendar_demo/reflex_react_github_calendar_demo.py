@@ -10,6 +10,7 @@ Reproduces every example from the upstream demo
 5. Year selector.
 6. Custom localization labels.
 7. Loading state.
+8. Advanced props via the Phase 3 helpers (transform_data + tooltips).
 
 Run from the repo root::
 
@@ -22,7 +23,11 @@ from __future__ import annotations
 
 import reflex as rx
 
-from reflex_react_github_calendar import github_calendar
+from reflex_react_github_calendar import (
+    activity_tooltip,
+    github_calendar,
+    last_half_year,
+)
 
 DEFAULT_USERNAME = "grubersjoe"
 
@@ -267,6 +272,26 @@ def example_loading() -> rx.Component:
     )
 
 
+def example_advanced() -> rx.Component:
+    return section(
+        "8. Advanced props (Phase 3 helpers)",
+        rx.text(
+            "transform_data=last_half_year(), per-day tooltips via "
+            "activity_tooltip(...), and the opt-in headless tooltip stylesheet.",
+            margin_bottom="1em",
+            color_scheme="gray",
+        ),
+        github_calendar(
+            username=DemoState.username,
+            color_scheme=DemoState.color_scheme,
+            transform_data=last_half_year(),
+            tooltips=activity_tooltip("{{count}} contributions on {{date}}"),
+            show_color_legend=False,
+            include_tooltip_styles=True,
+        ),
+    )
+
+
 def index() -> rx.Component:
     return rx.container(
         rx.vstack(
@@ -283,6 +308,7 @@ def index() -> rx.Component:
             example_year(),
             example_custom_labels(),
             example_loading(),
+            example_advanced(),
             spacing="5",
             width="100%",
             padding_y="2em",

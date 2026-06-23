@@ -6,6 +6,19 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added (Phase 3 — Advanced props, via TDD/DDD)
+- `Theme` DDD value object (`domain.py`) validating custom color scales
+  (`[zero, max]` pair or five explicit colors) and producing the `theme` prop.
+- Function-prop recipes (`recipes.py`): `last_n_days(n)`, `last_half_year()`,
+  `activity_tooltip(template)`, `link_blocks(href_template)` — building the
+  raw JS `Var`s for `transform_data`, `tooltips` and `render_block`.
+- Opt-in tooltip stylesheet via
+  `github_calendar(..., include_tooltip_styles=True)` (`_get_custom_code`).
+- Contract render tests locking the snake_case→camelCase mapping and the v5
+  named/no-SSR wiring; domain, recipe and public-API test suites.
+- Top-level re-exports of `Theme` and all recipes.
+- Demo section 8 showcasing the advanced helpers.
+
 ### Added (Phase 0 — Foundations)
 - Repository scaffold following the Reflex custom-component layout.
 - `GitHubCalendar` wrapper for `react-github-calendar@5.0.6` (no-SSR, named

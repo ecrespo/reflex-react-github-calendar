@@ -139,6 +139,27 @@ class GitHubCalendar(NoSSRComponent):
     # hint that the heuristic would get wrong.
     _rename_props: dict[str, str] = {}
 
+    @classmethod
+    def create(cls, *children, include_tooltip_styles: bool = False, **props):
+        """Create the component, optionally importing the tooltip stylesheet.
+
+        v5 tooltips are headless (ADR-7), so the bundled stylesheet is opt-in.
+        Pass ``include_tooltip_styles=True`` to emit
+        ``import "react-github-calendar/styles.css";`` once in the frontend.
+        """
+        component = super().create(*children, **props)
+        # Stored off-band so it is not treated as a React prop / CSS style.
+        object.__setattr__(
+            component, "_include_tooltip_styles", include_tooltip_styles
+        )
+        return component
+
+    def _get_custom_code(self) -> str | None:
+        """Inject the headless-tooltip stylesheet import when opted in."""
+        if getattr(self, "_include_tooltip_styles", False):
+            return 'import "react-github-calendar/styles.css";'
+        return None
+
 
 # Convenience factory: ``github_calendar(username="grubersjoe")``.
 github_calendar = GitHubCalendar.create
