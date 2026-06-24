@@ -134,3 +134,54 @@ github_calendar(
   `show_month_labels` (not `hide_month_labels`).
 - The component is client-only (no SSR) and fetches data at runtime; expect a
   brief loading state on first paint.
+
+## 6. Phase 3 helpers (DDD domain + recipes)
+
+Ergonomic, pure-Python helpers so consumers never hand-write JS for the
+function-valued props. All are re-exported at the top level.
+
+### 6.1 `Theme` value object (`domain.py`)
+
+An immutable value object that validates the upstream color-scale invariant
+(each scale is a `[zero, max]` pair or five explicit colors) and renders the
+`theme` prop dict.
+
+```python
+from reflex_react_github_calendar import Theme, github_calendar
+
+theme = Theme(light=["#eee", "firebrick"], dark=["#333", "#d610ae"])
+github_calendar(username="grubersjoe", theme=theme.to_prop())
+```
+
+Invalid scales raise `ValueError` at construction (fail fast, not in the
+browser).
+
+### 6.2 Function-prop recipes (`recipes.py`)
+
+Each returns an `rx.Var` carrying a JS function; pass it straight to the prop.
+
+| Helper | Prop | Effect |
+| ------ | ---- | ------ |
+| `last_n_days(n)` | `transform_data` | Keep only the last `n` day entries. |
+| `last_half_year()` | `transform_data` | Keep entries from the last six months. |
+| `activity_tooltip(template)` | `tooltips` | Per-day tooltip from a `{{count}}`/`{{date}}` template. |
+| `link_blocks(href_template)` | `render_block` | Wrap each day block in an anchor (`{{date}}` placeholder). |
+
+```python
+from reflex_react_github_calendar import github_calendar, last_half_year, activity_tooltip
+
+github_calendar(
+    username="grubersjoe",
+    transform_data=last_half_year(),
+    tooltips=activity_tooltip("{{count}} contributions on {{date}}"),
+    include_tooltip_styles=True,   # opt-in headless tooltip CSS (ADR-7)
+    show_color_legend=False,
+)
+```
+
+### 6.3 `include_tooltip_styles` (opt-in CSS)
+
+`github_calendar(..., include_tooltip_styles=True)` emits
+`import "react-github-calendar/tooltips.css";` once in the frontend (via
+`_get_custom_code`). Off by default — styles are never forced (ADR-7). The flag
+is not a React prop and does not appear in the rendered output.

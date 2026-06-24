@@ -78,7 +78,7 @@ Everything else is forwarded to `react-activity-calendar`.
 - `hideColorLegend` → `showColorLegend`; `hideMonthLabels` → `showMonthLabels`
   (booleans inverted). Several `react-activity-calendar` v3 changes apply too.
 - Tooltips are now "headless" (no default CSS). Import
-  `react-github-calendar/styles.css` or supply your own.
+  `react-github-calendar/tooltips.css` or supply your own.
 
 ## Examples shown on the official demo (`example/src/components/Docs.tsx`)
 

@@ -39,17 +39,34 @@ Granular tasks per phase. `[x]` done, `[ ]` pending. Keep in sync with reality.
 
 ## Phase 3 — Advanced props (stretch)
 
-- [ ] T3.1 `transform_data` recipe(s): "last N days" / "last half year".
-- [ ] T3.2 `render_block` helper to wrap days in links / attach handlers.
-- [ ] T3.3 Tooltip helper + optional default CSS import via `_get_custom_code`.
-- [ ] T3.4 Demo sections + spec updates for the above.
+- [x] T3.1 `transform_data` recipe(s): `last_n_days(n)` / `last_half_year()`
+  (`recipes.py`, TDD in `tests/test_recipes.py`).
+- [x] T3.2 `render_block` helper `link_blocks(href_template)` wrapping days in
+  links via `React.createElement` (`recipes.py`).
+- [x] T3.3 Tooltip helper `activity_tooltip(template)` + opt-in default CSS
+  import via `GitHubCalendar.create(include_tooltip_styles=True)` →
+  `_get_custom_code` (`tests/test_tooltip_styles.py`).
+- [x] T3.4 Demo section 8 + spec updates (`03-component-spec.md` §6) for the above.
+- [x] T3.5 DDD `Theme` value object validating color scales (`domain.py`,
+  `tests/test_domain.py`).
+- [x] T3.6 Contract render tests locking snake_case→camelCase wiring
+  (`tests/test_contract.py`).
 
-## Phase 4 — Release
+> Runtime (browser) verification of the generated JS for `render_block` /
+> tooltips is deferred to a live `reflex run`, consistent with the Phase 1/2
+> manual tasks; the helpers are unit-tested at the generated-JS level.
 
+## Phase 4 — Release (uv-based)
+
+- [x] T4.0 Conform to the Reflex custom-component layout; generate the `.pyi`
+  stub via `uv run reflex component build`; `twine check dist/*` passes.
 - [ ] T4.1 Finalize version + changelog entry.
-- [ ] T4.2 `python -m build`; install the wheel in a clean venv and smoke-test.
-- [ ] T4.3 `twine upload`; create a GitHub release tag.
+- [ ] T4.2 `uv run reflex component build`; install the wheel in a clean venv
+  (`uv venv && uv pip install dist/*.whl`) and smoke-test.
+- [ ] T4.3 `uv publish --token <pypi-token>` (or `uv run twine upload dist/*`);
+  create a GitHub release tag.
 - [ ] T4.4 Update README install instructions to the published version.
+- [ ] T4.5 (optional) `uv run reflex component share` for gallery discovery.
 
 ## Backlog / ideas
 
