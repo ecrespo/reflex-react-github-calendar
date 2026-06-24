@@ -94,7 +94,7 @@ class ReactFlowLib(rx.Component):
 ```
 
 We use this pattern (deferred to Phase 3) to optionally import the headless
-tooltip styles `react-github-calendar/styles.css`.
+tooltip styles `react-github-calendar/tooltips.css`.
 
 ## Packaging a reusable component
 

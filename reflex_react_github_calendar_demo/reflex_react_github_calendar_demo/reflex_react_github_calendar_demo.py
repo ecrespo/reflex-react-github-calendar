@@ -24,24 +24,38 @@ from __future__ import annotations
 import reflex as rx
 
 from reflex_react_github_calendar import (
+    Theme,
     activity_tooltip,
     github_calendar,
     last_half_year,
 )
 
 DEFAULT_USERNAME = "grubersjoe"
+DEFAULT_THEME_NAME = "GitHub (default)"
 
-# Example custom themes (light/dark color scales) shown in the theme section.
+
+def _first(value: object) -> object:
+    """Sliders emit a list of thumb values; take the first scalar."""
+    return value[0] if isinstance(value, (list, tuple)) else value
+
+
+# Example custom themes shown in the theme section, built through the DDD
+# ``Theme`` value object (validates each scale — 2 or 5 colors — at import time).
+# ``react-activity-calendar`` rejects an *empty* theme, so every entry is a
+# complete, valid theme; the default reproduces GitHub's green scale.
 THEMES: dict[str, dict[str, list[str]]] = {
-    "GitHub (default)": {},
-    "Firebrick": {
-        "light": ["#ebedf0", "#fb6a4a", "#de2d26", "#a50f15", "#67000d"],
-        "dark": ["#161b22", "#fb6a4a", "#de2d26", "#a50f15", "#67000d"],
-    },
-    "Ocean": {
-        "light": ["#eef4ff", "#9ecbff", "#4f9fff", "#1f6feb", "#0a3069"],
-        "dark": ["#0d1117", "#0a3069", "#1f6feb", "#4f9fff", "#9ecbff"],
-    },
+    DEFAULT_THEME_NAME: Theme(
+        light=["#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"],
+        dark=["#161b22", "#0e4429", "#006d32", "#26a641", "#39d353"],
+    ).to_prop(),
+    "Firebrick": Theme(
+        light=["#ebedf0", "#fb6a4a", "#de2d26", "#a50f15", "#67000d"],
+        dark=["#161b22", "#fb6a4a", "#de2d26", "#a50f15", "#67000d"],
+    ).to_prop(),
+    "Ocean": Theme(
+        light=["#eef4ff", "#9ecbff", "#4f9fff", "#1f6feb", "#0a3069"],
+        dark=["#0d1117", "#0a3069", "#1f6feb", "#4f9fff", "#9ecbff"],
+    ).to_prop(),
 }
 
 
@@ -59,7 +73,7 @@ class DemoState(rx.State):
 
     # Appearance.
     color_scheme: str = "light"  # "light" | "dark"
-    theme_name: str = "GitHub (default)"
+    theme_name: str = DEFAULT_THEME_NAME
 
     # Toggles.
     show_month_labels: bool = True
@@ -73,8 +87,8 @@ class DemoState(rx.State):
 
     @rx.var
     def theme(self) -> dict[str, list[str]]:
-        """The currently selected custom theme (empty = library default)."""
-        return THEMES.get(self.theme_name, {})
+        """The currently selected custom theme (always a valid, non-empty theme)."""
+        return THEMES.get(self.theme_name, THEMES[DEFAULT_THEME_NAME])
 
     @rx.var
     def year_value(self) -> str | int:
@@ -86,6 +100,49 @@ class DemoState(rx.State):
         value = self.pending_username.strip()
         if value:
             self.username = value
+
+    # Explicit setter event handlers. Reflex 0.9 removed auto-generated
+    # ``set_<var>`` setters (``state_auto_setters`` is deprecated), so we
+    # define them here. ``DemoState.setvar("x")`` resolves to ``set_x``.
+
+    def set_pending_username(self, value: str) -> None:
+        self.pending_username = value
+
+    def set_block_size(self, value: list[int]) -> None:
+        self.block_size = int(_first(value))
+
+    def set_block_margin(self, value: list[int]) -> None:
+        self.block_margin = int(_first(value))
+
+    def set_block_radius(self, value: list[int]) -> None:
+        self.block_radius = int(_first(value))
+
+    def set_font_size(self, value: list[int]) -> None:
+        self.font_size = int(_first(value))
+
+    def set_color_scheme(self, value: str) -> None:
+        self.color_scheme = value
+
+    def set_theme_name(self, value: str) -> None:
+        self.theme_name = value
+
+    def set_show_month_labels(self, value: bool) -> None:
+        self.show_month_labels = value
+
+    def set_show_weekday_labels(self, value: bool) -> None:
+        self.show_weekday_labels = value
+
+    def set_show_color_legend(self, value: bool) -> None:
+        self.show_color_legend = value
+
+    def set_show_total_count(self, value: bool) -> None:
+        self.show_total_count = value
+
+    def set_year(self, value: str) -> None:
+        self.year = value
+
+    def set_loading(self, value: bool) -> None:
+        self.loading = value
 
 
 def section(title: str, *children: rx.Component) -> rx.Component:
@@ -105,7 +162,7 @@ def example_basic() -> rx.Component:
             rx.input(
                 placeholder="GitHub username",
                 value=DemoState.pending_username,
-                on_change=DemoState.set_pending_username,
+                on_change=DemoState.setvar("pending_username"),
             ),
             rx.button("Show calendar", on_click=DemoState.apply_username),
             spacing="2",
@@ -125,22 +182,22 @@ def example_sizing() -> rx.Component:
             rx.text(f"Block size: {DemoState.block_size}px"),
             rx.slider(
                 min=6, max=20, default_value=12,
-                on_change=DemoState.set_block_size,
+                on_change=DemoState.setvar("block_size"),
             ),
             rx.text(f"Block margin: {DemoState.block_margin}px"),
             rx.slider(
                 min=1, max=10, default_value=4,
-                on_change=DemoState.set_block_margin,
+                on_change=DemoState.setvar("block_margin"),
             ),
             rx.text(f"Block radius: {DemoState.block_radius}px"),
             rx.slider(
                 min=0, max=10, default_value=2,
-                on_change=DemoState.set_block_radius,
+                on_change=DemoState.setvar("block_radius"),
             ),
             rx.text(f"Font size: {DemoState.font_size}px"),
             rx.slider(
                 min=10, max=24, default_value=14,
-                on_change=DemoState.set_font_size,
+                on_change=DemoState.setvar("font_size"),
             ),
             spacing="2",
             margin_bottom="1em",
@@ -164,12 +221,12 @@ def example_theme() -> rx.Component:
             rx.select(
                 ["light", "dark"],
                 value=DemoState.color_scheme,
-                on_change=DemoState.set_color_scheme,
+                on_change=DemoState.setvar("color_scheme"),
             ),
             rx.select(
                 list(THEMES.keys()),
                 value=DemoState.theme_name,
-                on_change=DemoState.set_theme_name,
+                on_change=DemoState.setvar("theme_name"),
             ),
             spacing="3",
             margin_bottom="1em",
@@ -189,22 +246,22 @@ def example_labels() -> rx.Component:
             rx.checkbox(
                 "Month labels",
                 checked=DemoState.show_month_labels,
-                on_change=DemoState.set_show_month_labels,
+                on_change=DemoState.setvar("show_month_labels"),
             ),
             rx.checkbox(
                 "Weekday labels",
                 checked=DemoState.show_weekday_labels,
-                on_change=DemoState.set_show_weekday_labels,
+                on_change=DemoState.setvar("show_weekday_labels"),
             ),
             rx.checkbox(
                 "Color legend",
                 checked=DemoState.show_color_legend,
-                on_change=DemoState.set_show_color_legend,
+                on_change=DemoState.setvar("show_color_legend"),
             ),
             rx.checkbox(
                 "Total count",
                 checked=DemoState.show_total_count,
-                on_change=DemoState.set_show_total_count,
+                on_change=DemoState.setvar("show_total_count"),
             ),
             spacing="4",
             margin_bottom="1em",
@@ -227,7 +284,7 @@ def example_year() -> rx.Component:
         rx.select(
             ["last", "2024", "2023", "2022", "2021", "2020"],
             value=DemoState.year,
-            on_change=DemoState.set_year,
+            on_change=DemoState.setvar("year"),
             margin_bottom="1em",
         ),
         github_calendar(
@@ -261,7 +318,7 @@ def example_loading() -> rx.Component:
         "7. Loading state",
         rx.button(
             rx.cond(DemoState.loading, "Stop loading", "Show loading state"),
-            on_click=DemoState.set_loading(~DemoState.loading),
+            on_click=DemoState.setvar("loading", ~DemoState.loading),
             margin_bottom="1em",
         ),
         github_calendar(

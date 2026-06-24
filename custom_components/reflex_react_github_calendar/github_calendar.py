@@ -145,7 +145,7 @@ class GitHubCalendar(NoSSRComponent):
 
         v5 tooltips are headless (ADR-7), so the bundled stylesheet is opt-in.
         Pass ``include_tooltip_styles=True`` to emit
-        ``import "react-github-calendar/styles.css";`` once in the frontend.
+        ``import "react-github-calendar/tooltips.css";`` once in the frontend.
         """
         component = super().create(*children, **props)
         # Stored off-band so it is not treated as a React prop / CSS style.
@@ -155,9 +155,14 @@ class GitHubCalendar(NoSSRComponent):
         return component
 
     def _get_custom_code(self) -> str | None:
-        """Inject the headless-tooltip stylesheet import when opted in."""
+        """Inject the headless-tooltip stylesheet import when opted in.
+
+        v5.0.6 exposes the stylesheet via its ``exports`` field as
+        ``./tooltips.css`` (not ``./styles.css``); using the wrong path makes
+        Vite fail to resolve the import.
+        """
         if getattr(self, "_include_tooltip_styles", False):
-            return 'import "react-github-calendar/styles.css";'
+            return 'import "react-github-calendar/tooltips.css";'
         return None
 
 

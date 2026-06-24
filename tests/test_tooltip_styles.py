@@ -2,8 +2,10 @@
 
 v5 tooltips are headless. Consumers may opt into the bundled stylesheet by
 passing ``include_tooltip_styles=True``; the component then emits an
-``import "react-github-calendar/styles.css";`` line via ``_get_custom_code``.
-Styles are never forced (ADR-7), and the flag must not leak into rendered props.
+``import "react-github-calendar/tooltips.css";`` line via ``_get_custom_code``.
+The path must match the package's ``exports`` field (v5.0.6 exports
+``./tooltips.css``, not ``./styles.css``). Styles are never forced (ADR-7), and
+the flag must not leak into rendered props.
 """
 
 from __future__ import annotations
@@ -20,7 +22,8 @@ def test_opt_in_imports_stylesheet() -> None:
         username="grubersjoe", include_tooltip_styles=True
     )._get_custom_code()
     assert code is not None
-    assert "react-github-calendar/styles.css" in code
+    assert "react-github-calendar/tooltips.css" in code
+    assert "styles.css" not in code  # the wrong path is a known failure mode
 
 
 def test_flag_does_not_leak_into_props() -> None:

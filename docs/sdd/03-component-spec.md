@@ -182,6 +182,6 @@ github_calendar(
 ### 6.3 `include_tooltip_styles` (opt-in CSS)
 
 `github_calendar(..., include_tooltip_styles=True)` emits
-`import "react-github-calendar/styles.css";` once in the frontend (via
+`import "react-github-calendar/tooltips.css";` once in the frontend (via
 `_get_custom_code`). Off by default — styles are never forced (ADR-7). The flag
 is not a React prop and does not appear in the rendered output.

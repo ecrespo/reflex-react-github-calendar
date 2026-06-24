@@ -103,7 +103,7 @@ blocking the simple, common case.
 
 ### ADR-7 — Tooltip styles are opt-in
 **Context:** v5 tooltips are "headless" (no default CSS). The package ships an
-optional stylesheet (`react-github-calendar/styles.css`).
+optional stylesheet (`react-github-calendar/tooltips.css`).
 **Decision:** Document importing the stylesheet (or supplying custom CSS) rather
 than forcing it. A future helper may inject it via `_get_custom_code`.
 **Consequences:** No surprise styles; consumers choose their tooltip look.
