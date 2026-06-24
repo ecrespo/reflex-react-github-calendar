@@ -6,6 +6,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-06-23
+
+First release, published to PyPI: <https://pypi.org/project/reflex-react-github-calendar/0.1.0/>.
+Install with `pip install reflex-react-github-calendar` (or `uv add ...`).
+
 ### Added (Packaging — Reflex custom component, publish-ready)
 - Generated `github_calendar.pyi` type stub (via `reflex component build`) so
   consumers get full IDE autocomplete and type checking; shipped in the wheel.
@@ -39,4 +44,5 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Apache-2.0 license, `.gitignore`, and a CI workflow (tests on Python
   3.10–3.12 + distribution build).
 
-[Unreleased]: https://github.com/ecrespo/reflex-react-github-calendar
+[Unreleased]: https://github.com/ecrespo/reflex-react-github-calendar/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/ecrespo/reflex-react-github-calendar/releases/tag/v0.1.0
