@@ -76,7 +76,7 @@ class GitHubCalendar(NoSSRComponent):
 
         v5 tooltips are headless (ADR-7), so the bundled stylesheet is opt-in.
         Pass ``include_tooltip_styles=True`` to emit
-        ``import "react-github-calendar/styles.css";`` once in the frontend."""
+        ``import "react-github-calendar/tooltips.css";`` once in the frontend."""
         ...
 
 github_calendar = GitHubCalendar.create
