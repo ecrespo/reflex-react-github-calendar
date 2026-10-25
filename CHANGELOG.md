@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Security
+- Pin every GitHub Action in `ci.yml` and `publish.yml` to a full commit SHA
+  (version kept as a comment) and add Dependabot updates for GitHub Actions.
+
 ## [0.2.0] - 2026-10-25
 
 Migration to **Reflex 0.10**. The component API is unchanged.
