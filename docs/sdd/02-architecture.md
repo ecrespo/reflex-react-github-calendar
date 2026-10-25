@@ -112,29 +112,38 @@ than forcing it. A future helper may inject it via `_get_custom_code`.
 
 ```
 reflex-react-github-calendar/
-├── custom_components/
+├── src/
 │   └── reflex_react_github_calendar/
 │       ├── __init__.py            # public API
-│       └── github_calendar.py     # the GitHubCalendar wrapper
+│       ├── github_calendar.py     # the GitHubCalendar wrapper
+│       ├── domain.py              # Theme value object
+│       ├── recipes.py             # function-prop helpers
+│       └── py.typed               # .pyi stubs are generated at build time
 ├── reflex_react_github_calendar_demo/
 │   ├── rxconfig.py
 │   ├── requirements.txt
 │   └── reflex_react_github_calendar_demo/
 │       └── reflex_react_github_calendar_demo.py   # demo app, one section per feature
-├── tests/test_github_calendar.py  # wiring + prop smoke tests
+├── tests/                        # wiring, contract, domain and recipe tests
 ├── docs/{sdd,research}/           # this documentation
-├── pyproject.toml                 # setuptools; package from custom_components/
-└── .github/workflows/ci.yml       # test (3.10–3.12) + build
+├── pyproject.toml                 # hatchling + hatch-reflex-pyi; package from src/
+└── .github/workflows/
+    ├── ci.yml                     # test (3.11–3.14) + build + demo compile
+    └── publish.yml                # tag vX.Y.Z → PyPI (trusted publishing)
 ```
 
-This is the layout produced by `reflex component init`, matching the sibling
-`reflex-*` packages so contributors are immediately at home.
+This follows the official
+[Reflex component template](https://github.com/reflex-dev/component-template)
+(`src/` layout). Reflex 0.10 removed the `reflex component` CLI, and the
+`hatch-reflex-pyi` build hook that replaces its stub generation requires `src/`.
 
 ## 5. Build & distribution
 
-`setuptools` packages the `custom_components/reflex_react_github_calendar`
-directory. `python -m build` produces a wheel + sdist; `twine` publishes to
-PyPI. The npm dependency is declared by `library` and installed by Reflex into
+`hatchling` packages `src/reflex_react_github_calendar`. `uv build` produces a
+wheel + sdist; the `hatch-reflex-pyi` build hook generates the `.pyi` type stubs
+during the build (they are not committed). Releases are published to PyPI by
+`.github/workflows/publish.yml` when a `vX.Y.Z` tag that matches the
+`pyproject.toml` version is pushed on `main`, using PyPI trusted publishing. The npm dependency is declared by `library` and installed by Reflex into
 the consuming app's `.web` directory on first run — there is no separate JS
 build step in this repo.
 

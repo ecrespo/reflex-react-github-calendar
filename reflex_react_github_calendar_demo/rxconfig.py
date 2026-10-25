@@ -5,5 +5,7 @@ config = rx.Config(
     plugins=[
         rx.plugins.SitemapPlugin(),
         rx.plugins.TailwindV4Plugin(),
+        # Reflex 0.9+ requires Radix Themes to be enabled explicitly.
+        rx.plugins.RadixThemesPlugin(),
     ],
 )

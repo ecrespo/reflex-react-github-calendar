@@ -1,0 +1,79 @@
+name: Publish
+
+# Merge to main, then push a tag `vX.Y.Z` matching `version` in pyproject.toml
+# to build and publish that release to PyPI.
+on:
+  push:
+    tags: ["v*"]
+
+env:
+  # Run every JavaScript action on the Node 24 runtime.
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v10.3.2
+      - name: The tag matches the package version
+        run: |
+          version="$(uv version --short)"
+          if [ "v${version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match pyproject version ${version}"
+            exit 1
+          fi
+      - name: The tagged commit is on main
+        run: git merge-base --is-ancestor "${GITHUB_SHA}" origin/main
+      - name: Run tests
+        run: |
+          uv sync --locked
+          uv run pytest
+      - name: Build distribution (generates the .pyi stubs)
+        run: uv build
+      - name: The wheel carries the generated stubs
+        run: unzip -l dist/*.whl | grep -q '\.pyi$'
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    # Trusted publishing: register this repository, this workflow (publish.yml)
+    # and this environment (pypi) on PyPI once, and no API token is needed.
+    environment:
+      name: pypi
+      url: https://pypi.org/project/reflex-react-github-calendar/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
+
+  release:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" dist/* \
+            --repo "${GITHUB_REPOSITORY}" \
+            --title "${GITHUB_REF_NAME}" \
+            --notes "See [CHANGELOG.md](https://github.com/${GITHUB_REPOSITORY}/blob/main/CHANGELOG.md)."

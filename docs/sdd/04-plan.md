@@ -70,8 +70,9 @@ the demo.
 Work:
 
 - Finalize version + `CHANGELOG.md`.
-- `python -m build`; validate the wheel installs in a clean venv.
-- `twine upload`; tag the release; update README install instructions.
+- `uv build`; validate the wheel installs in a clean venv.
+- Merge to `main` and push a `vX.Y.Z` tag; the `publish.yml` workflow uploads
+  to PyPI via trusted publishing. Update README install instructions.
 
 **Done when:** `pip install reflex-react-github-calendar` works from PyPI and the
 demo runs against the installed package.
@@ -87,4 +88,4 @@ Phase 0 ──▶ Phase 1 ──▶ Phase 2 ──▶ Phase 4
 
 - Code + tests updated together.
 - Affected SDD docs updated in the same PR.
-- CI green (tests on 3.10–3.12, build succeeds).
+- CI green (tests on 3.11–3.14, build succeeds, demo compiles).

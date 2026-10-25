@@ -54,9 +54,10 @@ contributions calendar in one line.
 
 - NFR-1 — Pure-Python API; no JS required for the Must-have features.
 - NFR-2 — Reproducible builds via a pinned npm version of the React package.
-- NFR-3 — Python ≥ 3.10, Reflex ≥ 0.8.
+- NFR-3 — Python ≥ 3.11, Reflex ≥ 0.10.
 - NFR-4 — Apache-2.0 license (matches Reflex and sibling packages).
-- NFR-5 — CI on Python 3.10/3.11/3.12; build artifacts produced on every push.
+- NFR-5 — CI on Python 3.11/3.12/3.13/3.14 (GitHub Actions on Node 24); build
+  artifacts and a demo compile on every push; tag-triggered PyPI publishing.
 
 ## 7. Acceptance criteria
 

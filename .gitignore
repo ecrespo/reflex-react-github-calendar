@@ -21,6 +21,7 @@ reflex.lock/
 /reflex_react_github_calendar_demo/.gitignore
 
 # Agent scratch
+.playwright-cli/
 .superpowers/
 
 # Node
@@ -30,3 +31,6 @@ node_modules/
 .idea/
 .vscode/
 .DS_Store
+
+# Generated at build time by the hatch-reflex-pyi hook (not committed)
+src/**/*.pyi

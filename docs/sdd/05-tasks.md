@@ -60,13 +60,15 @@ Granular tasks per phase. `[x]` done, `[ ]` pending. Keep in sync with reality.
 
 - [x] T4.0 Conform to the Reflex custom-component layout; generate the `.pyi`
   stub via `uv run reflex component build`; `twine check dist/*` passes.
-- [ ] T4.1 Finalize version + changelog entry.
-- [ ] T4.2 `uv run reflex component build`; install the wheel in a clean venv
-  (`uv venv && uv pip install dist/*.whl`) and smoke-test.
-- [ ] T4.3 `uv publish --token <pypi-token>` (or `uv run twine upload dist/*`);
-  create a GitHub release tag.
-- [ ] T4.4 Update README install instructions to the published version.
-- [ ] T4.5 (optional) `uv run reflex component share` for gallery discovery.
+- [x] T4.1 Finalize version + changelog entry.
+- [x] T4.2 Build and smoke-test the wheel in a clean venv.
+- [x] T4.3 Publish 0.1.0 to PyPI and tag `v0.1.0`.
+- [x] T4.4 Update README install instructions to the published version.
+- [x] T4.6 Migrate to Reflex 0.10 (0.2.0): Python ≥ 3.11, `src/` layout,
+  hatchling + `hatch-reflex-pyi` (replaces the removed `reflex component build`),
+  CI on Python 3.11–3.14 with Node 24 actions plus a demo compile job.
+- [x] T4.7 Tag-triggered `publish.yml` workflow (PyPI trusted publishing +
+  GitHub release).
 
 ## Backlog / ideas
 
