@@ -1,44 +1,53 @@
-[build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "reflex-react-github-calendar"
-version = "0.1.0"
+version = "0.2.0"
 description = "A Reflex custom component wrapping react-github-calendar v5 (a GitHub contributions heatmap with themes, sizing, labels and localization)."
 readme = "README.md"
-# Reflex 0.9 dropped Python 3.9; the official custom-component template pins >=3.10.
-requires-python = ">=3.10"
-license = { text = "Apache-2.0" }
+# Reflex 0.10 requires Python >= 3.11.
+requires-python = ">=3.11"
+license = "Apache-2.0"
 authors = [{ name = "Ernesto Crespo", email = "ecrespo@gmail.com" }]
 # "reflex-custom-components" is required for Reflex gallery / PyPI discovery.
-keywords = ["reflex", "reflex-custom-components", "react-github-calendar", "github", "calendar", "heatmap", "contributions", "component"]
+keywords = ["reflex", "reflex-component", "reflex-custom-components", "react-github-calendar", "github", "calendar", "heatmap", "contributions", "component"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Framework :: AsyncIO",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = ["reflex>=0.8.0"]
+dependencies = ["reflex>=0.10.0"]
 
 [project.urls]
 Homepage = "https://github.com/ecrespo/reflex-react-github-calendar"
 Repository = "https://github.com/ecrespo/reflex-react-github-calendar"
 Issues = "https://github.com/ecrespo/reflex-react-github-calendar/issues"
+Changelog = "https://github.com/ecrespo/reflex-react-github-calendar/blob/main/CHANGELOG.md"
 "react-github-calendar" = "https://github.com/grubersjoe/react-github-calendar"
 
-[project.optional-dependencies]
-dev = ["build", "twine", "pytest"]
+[dependency-groups]
+dev = ["pytest>=8"]
 
-[tool.setuptools.packages.find]
-where = ["custom_components"]
+[build-system]
+# `reflex component build` was removed in Reflex 0.10; the hatch-reflex-pyi hook
+# now generates the .pyi stubs at build time (requires the src/ layout).
+requires = ["hatchling", "hatch-reflex-pyi"]
+build-backend = "hatchling.build"
 
-[tool.setuptools.package-data]
-reflex_react_github_calendar = ["*.pyi"]
+[tool.hatch.build]
+# The .pyi stubs are generated at build time and are not committed.
+artifacts = ["/src/**/*.pyi"]
+
+[tool.hatch.build.targets.sdist]
+exclude = ["/reflex_react_github_calendar_demo", "/.github", "/.claude", "/.playwright-cli", "/docs"]
+
+[tool.hatch.build.hooks.reflex-pyi]
+dependencies = ["ruff", "reflex>=0.10.0"]
 
 [tool.pytest.ini_options]
-pythonpath = ["custom_components"]
 testpaths = ["tests"]
 addopts = "-q"

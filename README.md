@@ -13,11 +13,20 @@ def index() -> rx.Component:
     return github_calendar(username="grubersjoe")
 ```
 
-> **Status:** Core wrapper + Phase 3 helpers implemented (TDD/DDD) and packaged
-> as a publish-ready Reflex custom component (type stub generated, `twine check`
-> passing). The wrapper, demo app, full SDD docs, CI scaffold, the DDD `Theme`
-> value object and the advanced function-prop recipes are in place. See
-> [`docs/sdd/04-plan.md`](docs/sdd/04-plan.md) for the roadmap and current phase.
+[![PyPI](https://img.shields.io/pypi/v/reflex-react-github-calendar)](https://pypi.org/project/reflex-react-github-calendar/)
+[![CI](https://github.com/ecrespo/reflex-react-github-calendar/actions/workflows/ci.yml/badge.svg)](https://github.com/ecrespo/reflex-react-github-calendar/actions/workflows/ci.yml)
+
+> **Status:** Published on PyPI. Version **0.2.0** targets **Reflex 0.10**
+> (Python ≥ 3.11). The wrapper, demo app, full SDD docs, the DDD `Theme` value
+> object and the advanced function-prop recipes are in place. See
+> [`docs/sdd/04-plan.md`](docs/sdd/04-plan.md) for the roadmap.
+
+## Requirements
+
+| Package version | Reflex | Python |
+| --- | --- | --- |
+| 0.2.x | ≥ 0.10 | ≥ 3.11 |
+| 0.1.x | 0.8 – 0.9 | ≥ 3.10 |
 
 ## Features
 
@@ -33,13 +42,15 @@ def index() -> rx.Component:
 ## Installation
 
 ```shell
-# From PyPI (after the first release):
+# From PyPI:
 pip install reflex-react-github-calendar
+# or
+uv add reflex-react-github-calendar
 
 # From source (development):
 git clone https://github.com/ecrespo/reflex-react-github-calendar
 cd reflex-react-github-calendar
-pip install -e ".[dev]"
+uv sync
 ```
 
 Reflex installs the underlying npm package (`react-github-calendar@5.0.6`) into
@@ -99,11 +110,13 @@ browser. See [`docs/sdd/03-component-spec.md`](docs/sdd/03-component-spec.md) §
 ## Running the demo
 
 ```shell
-uv venv && uv pip install -e ".[dev]"
+uv sync                 # installs Reflex 0.10 + the component (editable)
 cd reflex_react_github_calendar_demo
-uv run reflex init      # first time only
 uv run reflex run
 ```
+
+The demo needs Node.js (Reflex 0.10 works with Node 24). `uv run reflex compile`
+checks that the demo compiles without starting the servers.
 
 Open http://localhost:3000. The demo reproduces every upstream example: a basic
 calendar with a username switcher, sizing controls, color scheme + custom
@@ -144,40 +157,55 @@ Research notes are in [`docs/research/`](docs/research).
 This project uses [uv](https://docs.astral.sh/uv/) as its package manager.
 
 ```shell
-uv venv                       # create .venv
-uv pip install -e ".[dev]"    # editable install + dev tools (build, twine, pytest)
+uv sync                       # create .venv, install the package (editable) + dev group
 uv run pytest                 # run the test suite
+uv build                      # build wheel + sdist (generates the .pyi stubs)
 ```
 
-CI runs the test suite on Python 3.10–3.12 and builds the distribution on every
-push (see [`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
+The package uses the `src/` layout of the official
+[Reflex component template](https://github.com/reflex-dev/component-template).
+The `.pyi` type stubs are generated at build time by the `hatch-reflex-pyi`
+hook and are not committed (Reflex 0.10 removed `reflex component build`).
+
+CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs on GitHub
+Actions with the Node 24 runtime: the test suite on Python 3.11–3.14, a
+distribution build that checks the wheel ships the stubs, and a compile of the
+demo app.
 
 ## Publishing (Reflex custom component)
 
 This package follows the
-[Reflex custom-component](https://reflex.dev/docs/custom-components/overview/)
-conventions, so it is publishable to PyPI and discoverable in the Reflex gallery
-(`reflex-custom-components` keyword).
+[Reflex custom-component](https://reflex.dev/docs/wrapping-react/overview/)
+conventions and carries the `reflex-custom-components` keyword so it is
+discoverable on PyPI.
 
-**Prerequisites** (see the
-[publishing prerequisites](https://reflex.dev/docs/custom-components/prerequisites-for-publishing/)):
-a [PyPI](https://pypi.org) account and an API token.
+Releases are published by
+[`.github/workflows/publish.yml`](.github/workflows/publish.yml) through
+[PyPI trusted publishing](https://docs.pypi.org/trusted-publishers/) — no API
+token is stored in the repository.
 
-**Build** — generates the `.pyi` type stub and the wheel + sdist in `dist/`:
+**One-time setup:** on PyPI, add a trusted publisher for
+`ecrespo/reflex-react-github-calendar` with workflow `publish.yml` and
+environment `pypi`, and create the `pypi` environment in the GitHub repository
+settings.
 
-```shell
-uv run reflex component build
-```
+**Release a new version:**
 
-**Publish** — Reflex defers the upload to your tool of choice; with uv:
+1. Bump `version` in `pyproject.toml` and `__version__` in
+   `src/reflex_react_github_calendar/__init__.py`, update `CHANGELOG.md`, and
+   run `uv lock`.
+2. Open a PR to `main` and merge it once CI is green.
+3. Tag the merge commit on `main` and push the tag:
 
-```shell
-uv publish --token pypi-<your-token>      # uploads dist/* to PyPI
-# or, equivalently: uv run twine upload dist/*
-```
+   ```shell
+   git checkout main && git pull
+   git tag v0.2.0
+   git push origin v0.2.0
+   ```
 
-Then bump `version` in `pyproject.toml` and `__init__.py` for the next release,
-and optionally run `uv run reflex component share` to submit gallery details.
+The workflow checks that the tag matches the `pyproject.toml` version and is on
+`main`, runs the tests, builds the wheel + sdist (with stubs), uploads them to
+PyPI and creates the GitHub release.
 
 ## Credits & license
 
